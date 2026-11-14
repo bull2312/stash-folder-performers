@@ -1,0 +1,27 @@
+name: Folder Performers
+description: Creates a performer for each subfolder of your root directory (named after the folder), adds that performer to every scene, image and gallery inside it, and marks them organized. Only folders under the configured root directories are touched.
+version: 1.0.0
+exec:
+  - python
+  - "{pluginDir}/folder_performers.py"
+interface: raw
+
+settings:
+  rootDirectories:
+    displayName: Root directories
+    description: Full path(s) to the parent folder. ONLY these are processed - the rest of your library is ignored. Each subfolder inside becomes a performer. Separate multiple roots with commas, e.g. /mnt/stash/auditionvids,/mnt/stash/other
+    type: STRING
+
+tasks:
+  - name: Assign performers from folders
+    description: Scan every subfolder of the root directories, create missing performers, and add them to the scenes, images and galleries in each folder. Run a library Scan first so Stash knows about the files.
+    defaultArgs:
+      mode: all
+
+hooks:
+  - name: Assign performer to new items
+    description: When Stash scans in a new scene, image or gallery under a root directory, add the performer for its folder automatically.
+    triggeredBy:
+      - Scene.Create.Post
+      - Image.Create.Post
+      - Gallery.Create.Post
